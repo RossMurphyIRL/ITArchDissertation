@@ -12,6 +12,7 @@ namespace Infrastructure
         public CourseContext(DbContextOptions<CourseContext> options)
             : base(options)
         {
+            Database.EnsureCreated();
         }
         public DbSet<UserDto> Users { get; set; }
         public DbSet<TaskDto> Tasks { get; set; }

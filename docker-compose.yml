@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+  dissertationmssqlef:
+    image: ${DOCKER_REGISTRY-}dissertationmssqlef
+    container_name: dissertationmssqlef
+    build:
+      context: .
+      dockerfile: DissertationMSSQLEF/Dockerfile
+  dbmssqlitarch:
+    image: "mcr.microsoft.com/mssql/server"
+    container_name: dbmssqlitarch
+    environment:
+      SA_PASSWORD: "Ta11a6ht07022022!"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"

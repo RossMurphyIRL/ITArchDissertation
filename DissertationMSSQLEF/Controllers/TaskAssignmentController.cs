@@ -41,7 +41,7 @@ namespace DissertationMSSQLEF.Controllers
                 _taskRepository.AssignTask(newTask, newUser);
                 Console.WriteLine("\nAssigned Task: '" + newTask.Title + "' to user '" + newUser.GetFullName() + "'");
 
-                _taskRepository.UpdateFirstTaskDueDate(DateTime.Parse("30-06-2016"));
+                _taskRepository.UpdateFirstTaskDueDate(DateTime.Parse("05-06-2016"));
                 Console.WriteLine("\nUpdate Task: ");
 
                 _taskRepository.DeleteTask(newTask.TaskId);
