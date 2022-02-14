@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: C:\Program Files\Kompose\kompose.exe convert -f docker-compose.yml
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: dissertationmssqlef
+  name: dissertationmssqlef
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: dissertationmssqlef
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: C:\Program Files\Kompose\kompose.exe convert -f docker-compose.yml
+        kompose.version: 1.22.0 (955b78124)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: dissertationmssqlef
+    spec:
+      containers:
+        - image: dissertationmssqlef
+          name: dissertationmssqlef
+          resources: {}
+      restartPolicy: Always
+status: {}
