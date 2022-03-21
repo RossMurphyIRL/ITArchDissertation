@@ -1,96 +1,103 @@
 apiVersion: v1
 kind: Service
+metadata: 
+  name: dbmssqlitarch 
+  namespace: default 
+spec: 
+  selector: 
+    app: mssql 
+  ports: 
+    - protocol: TCP 
+      port: 1433 
+      targetPort: 1433 
+  type: LoadBalancer
+
+---
+
+apiVersion: v1
+kind: Service
 metadata:
-  annotations:
-    kompose.cmd: C:\Program Files\Kompose\kompose.exe convert -f docker-compose.yml
-    kompose.version: 1.22.0 (955b78124)
-  creationTimestamp: null
+  name: dissertationmssqlef
+  namespace: default 
   labels:
-    io.kompose.service: dbmssqlitarch
-  name: dbmssqlitarch
+    app: dissertationmssqlef
 spec:
+  type: LoadBalancer
   ports:
-    - name: "1433"
-      port: 1433
-      targetPort: 1433
+    - name: lb-api-port
+      port: 80
   selector:
-    io.kompose.service: dbmssqlitarch
-status:
-  loadBalancer: {}
+    app: dissertationmssqlef
+
+---
+
+apiVersion: apps/v1 
+kind: Deployment 
+metadata: 
+  name: mssql-deployment 
+  namespace: default 
+spec: 
+  replicas: 1 
+  selector: 
+     matchLabels: 
+       app: mssql 
+  template: 
+    metadata: 
+      labels: 
+        app: mssql 
+    spec: 
+      terminationGracePeriodSeconds: 30 
+      hostname: mssqlinst 
+      securityContext: 
+        fsGroup: 10001 
+      containers: 
+      - name: mssql 
+        image: mcr.microsoft.com/mssql/server:2019-latest 
+        ports: 
+        - containerPort: 1433 
+        env: 
+        - name: MSSQL_PID 
+          value: "Developer" 
+        - name: ACCEPT_EULA 
+          value: "Y" 
+        - name: SA_PASSWORD 
+          value: Ta11a6ht07022022! 
+        volumeMounts: 
+        - name: mssqldb 
+          mountPath: /var/opt/mssql 
+      volumes: 
+      - name: mssqldb 
+        persistentVolumeClaim: 
+          claimName: mssql-data 
+
 
 ---
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: C:\Program Files\Kompose\kompose.exe convert -f docker-compose.yml
-    kompose.version: 1.22.0 (955b78124)
-  creationTimestamp: null
-  labels:
-    io.kompose.service: dbmssqlitarch
-  name: dbmssqlitarch
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      io.kompose.service: dbmssqlitarch
-  strategy: {}
-  template:
-    metadata:
-      annotations:
-        kompose.cmd: C:\Program Files\Kompose\kompose.exe convert -f docker-compose.yml
-        kompose.version: 1.22.0 (955b78124)
-      creationTimestamp: null
-      labels:
-        io.kompose.service: dbmssqlitarch
-    spec:
-      containers:
-        - env:
-            - name: ACCEPT_EULA
-              value: "Y"
-            - name: SA_PASSWORD
-              value: Ta11a6ht07022022!
-          image: mcr.microsoft.com/mssql/server
-          name: dbmssqlitarch
-          ports:
-            - containerPort: 1433
-          resources: {}
-      restartPolicy: Always
-status: {}
-
-
----
-
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  annotations:
-    kompose.cmd: C:\Program Files\Kompose\kompose.exe convert -f docker-compose.yml
-    kompose.version: 1.22.0 (955b78124)
-  creationTimestamp: null
-  labels:
-    io.kompose.service: dissertationmssqlef
   name: dissertationmssqlef
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: dissertationmssqlef
+      app: dissertationmssqlef
   strategy: {}
   template:
     metadata:
-      annotations:
-        kompose.cmd: C:\Program Files\Kompose\kompose.exe convert -f docker-compose.yml
-        kompose.version: 1.22.0 (955b78124)
-      creationTimestamp: null
       labels:
-        io.kompose.service: dissertationmssqlef
+        app: dissertationmssqlef
     spec:
       containers:
-        - image: dissertationmssqlef:latest
+        - image: adocontainerrp.azurecr.io/dissertationmssqlef:v2
           name: dissertationmssqlef
-          imagePullPolicy: Never
-          resources: {}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          env:
+            - name: ASPNETCORE_URLS
+              value: http://*:80
+      imagePullSecrets:
+        - name: diss-acr-secret
       restartPolicy: Always
 status: {}
