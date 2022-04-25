@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Service
+metadata: 
+  name: dbmssqlitarch 
+  namespace: default 
+spec: 
+  selector: 
+    app: mssql 
+  ports: 
+    - protocol: TCP 
+      port: 1433 
+      targetPort: 1433 
+  type: LoadBalancer
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: dissertationmssqlef
+  namespace: default 
+  labels:
+    app: dissertationmssqlef
+spec:
+  type: LoadBalancer
+  ports:
+    - name: lb-api-port
+      port: 80
+  selector:
+    app: dissertationmssqlef
+
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: routerouting
+  namespace: default
+spec:
+  hosts:
+  - "*"
+  http:
+  - match:
+    - uri:
+        prefix: /headers
+      headers:
+        "@request.auth.claims.groups":
+          exact: group1
+    route:
+    - destination:
+        port:
+          number: 1200
+        host: httpbin

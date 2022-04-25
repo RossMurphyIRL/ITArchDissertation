@@ -1,0 +1,36 @@
+az login
+az acr login --name myregistry
+
+& minikube -p minikube docker-env --shell powershell | Invoke-Expression
+docker tag dissertationmssqlef adocontainerrp.azurecr.io/dissertationmssqlef:v1
+docker push adocontainerrp.azurecr.io/dissertationmssqlef:v1
+Import-AzAksCredential -ResourceGroupName ResearchProject -Name itarchresearchproject
+az ad sp create-for-rbac --name myAKSClusterServicePrincipal
+kubectl get secret diss-acr-secret --output="jsonpath={.data.\.dockerconfigjson}" | base64 --decode
+kubectl create secret docker-registry diss-acr-secret  --namespace default --docker-server=adocontainerrp.azurecr.io --docker-username=4d45c160-48fe-46cf-aba0-16dba16a8e20  --docker-password=mGrMpQsSCa5HUR756aU_ULQ~fVYI_feYV0
+az aks update -n itarchresearchproject -g ResearchProject --attach-acr adocontainerrp
+
+kubectl apply -f dbstoragedeployment.yaml
+
+https://www.mssqltips.com/sqlservertip/6775/run-sql-server-on-kubernetes/ how to deploy to mssql to kube
+
+helm repo add istio https://istio-release.storage.googleapis.com/charts
+helm repo update
+
+istioctl install --set profile=demo -y
+kubectl label namespace default istio-injection=enabled
+
+helm install istio-base istio/base -n istio-system
+helm install istiod istio/istiod -n istio-system --wait
+helm install researchprojchart researchprojchart/
+
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.13/samples/addons/prometheus.yaml
+
+kubectl -n istio-system get svc prometheus
+
+kubectl apply -f samples/addons
+
+istioctl dashboard prometheus
+istioctl dashboard kiali
+
+RMResearchProjectNewTenant
