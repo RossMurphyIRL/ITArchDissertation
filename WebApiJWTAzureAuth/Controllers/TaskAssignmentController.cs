@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Core.DTOs;
 using Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DissertationMSSQLEF.Controllers
 {
@@ -27,6 +28,7 @@ namespace DissertationMSSQLEF.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public ActionResult RunTaskAssignmentOpp()
         {
             Console.WriteLine("** C# CRUD sample with Entity Framework and SQL Server **\n");

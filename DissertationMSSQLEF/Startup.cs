@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 using Core;
 using System.Threading.Tasks;
 using Infrastructure.Repositories;
+using Microsoft.OpenApi.Models;
+using System;
 
 namespace DissertationMSSQLEF
 {
@@ -36,8 +38,21 @@ namespace DissertationMSSQLEF
                          }));
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ITaskRepository, TaskRepository>();
+
             services.AddControllers();
-            services.AddSwaggerGen();
+
+            var portUsed = Environment.GetEnvironmentVariable("ASPNETCORE_URLS");
+
+            services.AddSwaggerGen(c => {
+                c.SwaggerDoc("v1",
+                    new OpenApiInfo
+                    {
+                        Title = "Dissertation Web API",
+                        Version = "v1",
+                        Description = "Running on Port: " + portUsed,
+                    });
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

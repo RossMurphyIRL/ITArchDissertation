@@ -101,3 +101,34 @@ spec:
         - name: diss-acr-secret
       restartPolicy: Always
 status: {}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dissertationmssqlefv2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dissertationmssqlefv2
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: dissertationmssqlefv2
+    spec:
+      containers:
+        - image: adocontainerrp.azurecr.io/dissertationmssqlef:v2
+          name: dissertationmssqlefv2
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 2000
+          env:
+            - name: ASPNETCORE_URLS
+              value: http://*:2000
+      imagePullSecrets:
+        - name: diss-acr-secret
+      restartPolicy: Always
+status: {}
