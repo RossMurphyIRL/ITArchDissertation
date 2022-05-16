@@ -22,6 +22,9 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.IO;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Identity.Web;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using DissertationMSSQLEF.Controllers;
 
 namespace DissertationMSSQLEF
 {
@@ -37,23 +40,65 @@ namespace DissertationMSSQLEF
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Adds Microsoft Identity platform (AAD v2.0) support to protect this Api
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer("AzureAD", options =>
+            #region Authentication
+            services.AddAuthentication(o =>
             {
-                options.Audience = "99d48e8e-4962-4059-a084-25d57e4620b8";
-                options.Authority = "https://login.microsoftonline.com/7be57bbd-1168-4d0f-b36f-87a4b67594de/";
-            });
+                o.DefaultScheme = SchemesNamesConst.TokenAuthenticationDefaultScheme;
+            })
+            .AddScheme<TokenAuthenticationOptions, TokenAuthenticationHandler>(SchemesNamesConst.TokenAuthenticationDefaultScheme, 
+            o => {
+            }
+            );
+            #endregion
 
-            // Authorization
             services.AddAuthorization(options =>
             {
-                var defaultAuthorizationPolicyBuilder = new AuthorizationPolicyBuilder(
-                    "AzureAD");
-                defaultAuthorizationPolicyBuilder =
-                    defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser();
-                options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build();
+                options.AddPolicy("ValidateBearerToken", policy =>
+                {
+                    policy.Requirements.Add(new ValidateBearerToken());
+                });
             });
+            services.AddSingleton<IAuthorizationHandler, ValidateTokenHandler>();
+            var options = new TokenAuthenticationOptions()
+            {
+                Instance = Configuration.GetSection("AzureAd:Instance").Value,
+                TenantId = Configuration.GetSection("AzureAd:TenantId").Value,
+                ClientId = Configuration.GetSection("AzureAd:ClientId").Value
+            };
+            var azureSection = Configuration.GetSection("Azure");
+
+            services.AddOptions<TokenAuthenticationOptions>("AzureAd").Bind(azureSection);
+            services.Configure<TokenAuthenticationOptions>(Configuration.GetSection("Azure"));
+            services.AddHttpContextAccessor();
+            services.AddSingleton<IConfiguration>(Configuration);
+            // Adds Microsoft Identity platform (AAD v2.0) support to protect this Api
+            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //.AddJwtBearer("AzureAD", options =>
+            //{
+            //    options.Audience = "99d48e8e-4962-4059-a084-25d57e4620b8";
+            //    options.Authority = "https://login.microsoftonline.com/7be57bbd-1168-4d0f-b36f-87a4b67594de/";
+            //});
+            //    services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+            //.AddMicrosoftIdentityWebApp(options =>
+            //{
+            //    Configuration.Bind("AzureAd", options);
+
+            //});
+            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //.AddAzureADBearer(options =>
+            //{
+            //    Configuration.Bind("AzureAd", options);
+            //});
+
+            // Authorization
+            //services.AddAuthorization(options =>
+            //{
+            //    var defaultAuthorizationPolicyBuilder = new AuthorizationPolicyBuilder(
+            //        AzureADDefaults.JwtBearerAuthenticationScheme);
+            //    defaultAuthorizationPolicyBuilder =
+            //        defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser();
+            //    options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build();
+            //});
 
             services.AddDbContext<CourseContext>(opt =>
                          opt.UseSqlServer(Configuration.GetConnectionString("DissertationDatabase"),
@@ -63,6 +108,14 @@ namespace DissertationMSSQLEF
                          }));
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ITaskRepository, TaskRepository>();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsApi",
+                    builder => builder.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod());
+            });
 
             services.AddControllers();
 
@@ -120,6 +173,7 @@ namespace DissertationMSSQLEF
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseCors("CorsApi");
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseMiddleware<MyErrorHandling>();
@@ -152,5 +206,9 @@ namespace DissertationMSSQLEF
                 await context.Response.WriteAsync("it broke. :(");
             }
         }
+    }
+    public static class SchemesNamesConst
+    {
+        public const string TokenAuthenticationDefaultScheme = "TokenAuthenticationScheme";
     }
 }

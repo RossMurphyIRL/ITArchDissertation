@@ -68,3 +68,34 @@ spec:
         - name: diss-acr-secret
       restartPolicy: Always
 status: {}
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapijwtazureauth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webapijwtazureauth
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: webapijwtazureauth
+    spec:
+      containers:
+        - image: adocontainerrp.azurecr.io/webapijwtazureauth:v1
+          name: dissertationmssqlef
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          env:
+            - name: ASPNETCORE_URLS
+              value: http://*:80
+      imagePullSecrets:
+        - name: diss-acr-secret
+      restartPolicy: Always
+status: {}

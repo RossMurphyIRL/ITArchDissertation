@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Core.DTOs;
 using Core.Interfaces;
+using System.Globalization;
 
 namespace DissertationMSSQLEF.Controllers
 {
@@ -32,6 +33,8 @@ namespace DissertationMSSQLEF.Controllers
             Console.WriteLine("** C# CRUD sample with Entity Framework and SQL Server **\n");
             try
             {
+                string timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
+                _taskRepository.AddTask("First App Start " + timestamp, false, DateTime.Parse("04-01-2017"));
                 for (int i = 0; i < 10; i++)
                 {
                     var newUser = _userRepository.AddUser("Anna", "Shrestinian");
@@ -52,6 +55,9 @@ namespace DissertationMSSQLEF.Controllers
                     _userRepository.DeleteUser(newUser.UserId);
                     Console.WriteLine("\nDelete User: " + newUser.UserId);
                 }
+
+                timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
+                _taskRepository.AddTask("First App End " + timestamp, false, DateTime.Parse("04-01-2017"));
             }
             catch (Exception e)
             {
