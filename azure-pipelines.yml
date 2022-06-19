@@ -13,10 +13,12 @@ variables:
   tag: '$(Build.BuildId)'
 
 steps:
-- task: PowerShell@2
+- task: AzurePowerShell@5
   inputs:
-    targetType: 'inline'
-    script: 'Install-Module -Name Az -force'
+    azureSubscription: 'DevOps Permission'
+    ScriptType: 'InlineScript'
+    Inline: 'Install-Module -Name Az -force'
+    azurePowerShellVersion: 'LatestVersion'
 
 - task: AzurePowerShell@5
   inputs:
