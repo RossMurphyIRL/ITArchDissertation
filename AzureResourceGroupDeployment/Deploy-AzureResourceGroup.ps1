@@ -13,7 +13,7 @@ Param(
     [switch] $ValidateOnly
 )
 
-Install-Module AzureRM 
+Install-Module AzureRM -force
 Import-Module AzureRM
 
 try {
