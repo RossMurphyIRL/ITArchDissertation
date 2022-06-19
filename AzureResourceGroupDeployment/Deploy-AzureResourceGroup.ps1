@@ -13,8 +13,8 @@ Param(
     [switch] $ValidateOnly
 )
 
-Install-Module AzureRM -force
-Import-Module AzureRM
+Install-Module Az -force
+Import-Module Az
 
 try {
     [Microsoft.Azure.Common.Authentication.AzureSession]::ClientFactory.AddUserAgent("VSAzureTools-$UI$($host.name)".replace(' ','_'), '3.0.0')
