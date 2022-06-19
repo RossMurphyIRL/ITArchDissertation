@@ -28,13 +28,16 @@ stages:
     pool:
       vmImage: $(vmImageName)
     steps:
-    - task: Docker@2
-      displayName: Build and push an image to container registry
+    - task: AzureResourceManagerTemplateDeployment@3
       inputs:
-        command: buildAndPush
-        repository: $(imageRepository)
-        dockerfile: $(dockerfilePath)
-        containerRegistry: $(dockerRegistryServiceConnection)
-        tags: |
-          $(tag)
+        deploymentScope: 'Resource Group'
+        azureResourceManagerConnection: 'Pay-As-You-Go (6a0bacec-b436-4cc3-ba04-2e978d782706)'
+        subscriptionId: '6a0bacec-b436-4cc3-ba04-2e978d782706'
+        action: 'Create Or Update Resource Group'
+        resourceGroupName: 'ResearchProject'
+        location: 'North Europe'
+        templateLocation: 'Linked artifact'
+        csmFile: 'Website.json'
+        csmParametersFile: 'Website.parameters.json'
+        deploymentMode: 'Incremental'
     
