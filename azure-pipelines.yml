@@ -19,25 +19,25 @@ variables:
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
 
-stages:
-- stage: Build
-  displayName: Build and push stage
-  jobs:
-  - job: Build
-    displayName: Build
-    pool:
-      vmImage: $(vmImageName)
-    steps:
-    - task: AzureResourceManagerTemplateDeployment@3
-      inputs:
-        deploymentScope: 'Resource Group'
-        azureResourceManagerConnection: 'Pay-As-You-Go (6a0bacec-b436-4cc3-ba04-2e978d782706)'
-        subscriptionId: '6a0bacec-b436-4cc3-ba04-2e978d782706'
-        action: 'Create Or Update Resource Group'
-        resourceGroupName: 'ResearchProject'
-        location: 'North Europe'
-        templateLocation: 'Linked artifact'
-        csmFile: 'Website.json'
-        csmParametersFile: 'Website.parameters.json'
-        deploymentMode: 'Incremental'
-    
+  steps:
+  - task: AzureFileCopy@4
+    inputs:
+      SourcePath: 'templates'
+      subscriptionId: '6a0bacec-b436-4cc3-ba04-2e978d782706'
+      Destination: 'AzureBlob'
+      storage: 'demostorage'
+      ContainerName: 'projecttemplates'
+    name: AzureFileCopy
+  - task: AzureResourceManagerTemplateDeployment@3
+    inputs:
+      deploymentScope: 'Resource Group'
+      azureResourceManagerConnection: 'Pay-As-You-Go (6a0bacec-b436-4cc3-ba04-2e978d782706)'
+      subscriptionId: '6a0bacec-b436-4cc3-ba04-2e978d782706'
+      action: 'Create Or Update Resource Group'
+      resourceGroupName: 'ResearchProject'
+      location: 'North Europe'
+      templateLocation: 'Linked artifact'
+      csmFile: 'Website.json'
+      csmParametersFile: 'Website.parameters.json'
+      deploymentMode: 'Incremental'
+      deploymentName: 'deploy1'
