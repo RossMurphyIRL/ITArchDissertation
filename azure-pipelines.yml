@@ -18,5 +18,5 @@ steps:
     azureSubscription: 'DevOps Permission'
     ScriptType: 'FilePath'
     ScriptPath: './AzureResourceGroupDeployment/Deploy-AzureResourceGroup.ps1'
-    ScriptArguments: -TemplateFile AzureResourceGroupDeployment/Website.json -Location 'North Europe' -ResourceGroupName 'ResearchProject'
+    ScriptArguments: -TemplateFile AzureResourceGroupDeployment/Website.json -ResourceGroupLocation 'North Europe'
     azurePowerShellVersion: 'LatestVersion'
