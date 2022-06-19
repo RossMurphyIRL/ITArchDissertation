@@ -1,4 +1,6 @@
 #Requires -Version 3.0
+Install-Module AzureRM 
+Import-Module AzureRM
 
 Param(
     [string] [Parameter(Mandatory=$true)] $ResourceGroupLocation,
