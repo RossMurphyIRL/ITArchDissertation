@@ -8,36 +8,11 @@ trigger:
 resources:
 - repo: self
 
-variables:
-  # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: '7331b3d1-ba5b-49e3-8cf9-81a95f25dbcc'
-  imageRepository: 'rossmurphyirlitarchdissertation'
-  containerRegistry: 'researchprojectwebapi.azurecr.io'
-  dockerfilePath: '$(Build.SourcesDirectory)/DissertationMSSQLEF/Dockerfile'
-  tag: '$(Build.BuildId)'
-
-  # Agent VM image name
-  vmImageName: 'ubuntu-latest'
-
-  steps:
-  - task: AzureFileCopy@4
-    inputs:
-      SourcePath: 'templates'
-      subscriptionId: '6a0bacec-b436-4cc3-ba04-2e978d782706'
-      Destination: 'AzureBlob'
-      storage: 'demostorage'
-      ContainerName: 'projecttemplates'
-    name: AzureFileCopy
-  - task: AzureResourceManagerTemplateDeployment@3
-    inputs:
-      deploymentScope: 'Resource Group'
-      azureResourceManagerConnection: 'Pay-As-You-Go (6a0bacec-b436-4cc3-ba04-2e978d782706)'
-      subscriptionId: '6a0bacec-b436-4cc3-ba04-2e978d782706'
-      action: 'Create Or Update Resource Group'
-      resourceGroupName: 'ResearchProject'
-      location: 'North Europe'
-      templateLocation: 'Linked artifact'
-      csmFile: 'Website.json'
-      csmParametersFile: 'Website.parameters.json'
-      deploymentMode: 'Incremental'
-      deploymentName: 'deploy1'
+steps:
+- task: AzurePowerShell@5
+  inputs:
+    azureSubscription: 'script-connection'
+    ScriptType: 'FilePath'
+    ScriptPath: './Deploy-AzureResourceGroup.ps1'
+    ScriptArguments: -TemplateFile Website.json
+    azurePowerShellVersion: 'LatestVersion'
