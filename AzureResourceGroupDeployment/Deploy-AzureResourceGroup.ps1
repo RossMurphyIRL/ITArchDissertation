@@ -1,6 +1,4 @@
 #Requires -Version 3.0
-Install-Module AzureRM 
-Import-Module AzureRM
 
 Param(
     [string] [Parameter(Mandatory=$true)] $ResourceGroupLocation,
@@ -14,6 +12,9 @@ Param(
     [string] $DSCSourceFolder = 'DSC',
     [switch] $ValidateOnly
 )
+
+Install-Module AzureRM 
+Import-Module AzureRM
 
 try {
     [Microsoft.Azure.Common.Authentication.AzureSession]::ClientFactory.AddUserAgent("VSAzureTools-$UI$($host.name)".replace(' ','_'), '3.0.0')
