@@ -13,7 +13,6 @@ Param(
     [switch] $ValidateOnly
 )
 
-Install-Module Az -force
 Import-Module Az
 
 try {
