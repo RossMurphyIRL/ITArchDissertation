@@ -52,8 +52,9 @@ namespace DissertationMSSQLEF.Controllers
             Console.WriteLine("** C# CRUD sample with Entity Framework and SQL Server **\n");
             try
             {
+                var taskguid = Guid.NewGuid();
                 string timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
-                _taskRepository.AddTask("Second App Start " + timestamp, false, DateTime.Parse("04-01-2017"));
+                _taskRepository.AddTask("Second App Start " + timestamp, false, DateTime.Parse("04-01-2017"), taskguid);
                 for (int i = 0; i < 10; i++)
                 {
                     var newUser = _userRepository.AddUser("Anna", "Shrestinian");
@@ -78,7 +79,7 @@ namespace DissertationMSSQLEF.Controllers
                     Console.WriteLine("\nDelete User: " + newUser.UserId);
                 }
                 timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
-                _taskRepository.AddTask("Second App End " + timestamp, false, DateTime.Parse("04-01-2017"));
+                _taskRepository.AddTask("Second App End " + timestamp, false, DateTime.Parse("04-01-2017"), taskguid);
             }
             catch (Exception e)
             {

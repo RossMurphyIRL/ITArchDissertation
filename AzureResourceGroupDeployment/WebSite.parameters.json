@@ -1,0 +1,81 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "registryName": {
+      "value": "adocontainerrp"
+    },
+    "registryLocation": {
+      "value": "northeurope"
+    },
+    "zoneRedundancy": {
+      "value": "disabled"
+    },
+    "registrySku": {
+      "value": "Basic"
+    },
+    "registryApiVersion": {
+      "value": "2020-11-01-preview"
+    },
+    "tags": {
+      "value": {}
+    },
+    "publicNetworkAccess": {
+      "value": "Enabled"
+    },
+    "resourceName": {
+      "value": "itarchresearchproject"
+    },
+    "location": {
+      "value": "northeurope"
+    },
+    "dnsPrefix": {
+      "value": "itarchresearchproject-dns"
+    },
+    "osDiskSizeGB": {
+      "value": 0
+    },
+    "kubernetesVersion": {
+      "value": "1.22.6"
+    },
+    "networkPlugin": {
+      "value": "kubenet"
+    },
+    "enableRBAC": {
+      "value": true
+    },
+    "vmssNodePool": {
+      "value": true
+    },
+    "windowsProfile": {
+      "value": false
+    },
+    "enablePrivateCluster": {
+      "value": false
+    },
+    "enableHttpApplicationRouting": {
+      "value": false
+    },
+    "enableAzurePolicy": {
+      "value": false
+    },
+    "enableSecretStoreCSIDriver": {
+      "value": false
+    },
+    "enableOmsAgent": {
+      "value": true
+    },
+    "workspaceRegion": {
+      "value": "northeurope"
+    },
+    "workspaceName": {
+      "value": "DefaultWorkspace-6a0bacec-b436-4cc3-ba04-2e978d782706-NEU"
+    },
+    "omsWorkspaceId": {
+      "value": "/subscriptions/6a0bacec-b436-4cc3-ba04-2e978d782706/resourceGroups/DefaultResourceGroup-NEU/providers/Microsoft.OperationalInsights/workspaces/DefaultWorkspace-6a0bacec-b436-4cc3-ba04-2e978d782706-NEU"
+    },
+    "omsSku": {
+      "value": "standalone"
+    }
+  }
+}

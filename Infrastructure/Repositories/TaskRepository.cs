@@ -22,6 +22,14 @@ namespace Infrastructure.Repositories
             return newTask;
         }
 
+        public TaskDto AddTask(string title, bool isComplete, DateTime dueDate, Guid taskGuid)
+        {
+            var newTask = new TaskDto() { Title = title, IsComplete = isComplete, DueDate = dueDate, TaskGuid = taskGuid };
+            _context.Tasks.Add(newTask);
+            _context.SaveChanges();
+            return newTask;
+        }
+
         public void AssignTask(TaskDto task, UserDto user)
         {
             task.AssignedTo = user;

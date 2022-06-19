@@ -8,6 +8,7 @@ namespace Core.Interfaces
     public interface ITaskRepository
     {
         public TaskDto AddTask(string title, bool isComplete, DateTime dueDate);
+        public TaskDto AddTask(string title, bool isComplete, DateTime dueDate, Guid taskGuid);
         public void AssignTask(TaskDto taskDto, UserDto userDto);
         public void UpdateFirstTaskDueDate(DateTime dueDate);
         public void DeleteTask(int taskId);

@@ -13,6 +13,7 @@ namespace Core.DTOs
         public string Title { get; set; }
         public DateTime DueDate { get; set; }
         public bool IsComplete { get; set; }
+        public Guid? TaskGuid { get; set; }
         [NotMapped]
         public virtual UserDto AssignedTo { get; set; }
         public override string ToString()

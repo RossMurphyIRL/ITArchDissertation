@@ -7,18 +7,18 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:3.1 AS build
 WORKDIR /src
-COPY ["DissertationMSSQLEF/DissertationMSSQLEF.csproj", "DissertationMSSQLEF/"]
+COPY ["WebApiJWTAzureAuth/WebApiJWTAzureAuth.csproj", "WebApiJWTAzureAuth/"]
 COPY ["Infrastructure/Infrastructure.csproj", "Infrastructure/"]
 COPY ["Core/Core.csproj", "Core/"]
-RUN dotnet restore "DissertationMSSQLEF/DissertationMSSQLEF.csproj"
+RUN dotnet restore "WebApiJWTAzureAuth/WebApiJWTAzureAuth.csproj"
 COPY . .
-WORKDIR "/src/DissertationMSSQLEF"
-RUN dotnet build "DissertationMSSQLEF.csproj" -c Release -o /app/build
+WORKDIR "/src/WebApiJWTAzureAuth"
+RUN dotnet build "WebApiJWTAzureAuth.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "DissertationMSSQLEF.csproj" -c Release -o /app/publish
+RUN dotnet publish "WebApiJWTAzureAuth.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "DissertationMSSQLEF.dll"]
+ENTRYPOINT ["dotnet", "WebApiJWTAzureAuth.dll"]

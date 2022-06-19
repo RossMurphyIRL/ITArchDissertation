@@ -1,27 +1,27 @@
 apiVersion: apps/v1 
 kind: Deployment 
 metadata: 
-  name: mssql-deployment 
+  name: mssql-deployment2
   namespace: default 
 spec: 
   replicas: 1 
   selector: 
      matchLabels: 
-       app: mssql 
+       app: mssql2
   template: 
     metadata: 
       labels: 
-        app: mssql 
+        app: mssql2
     spec: 
       terminationGracePeriodSeconds: 30 
       hostname: mssqlinst 
       securityContext: 
         fsGroup: 10001 
       containers: 
-      - name: mssql 
+      - name: mssql2
         image: mcr.microsoft.com/mssql/server:2019-latest 
         ports: 
-        - containerPort: 1433 
+        - containerPort: 1422 
         env: 
         - name: MSSQL_PID 
           value: "Developer" 
@@ -35,7 +35,7 @@ spec:
       volumes: 
       - name: mssqldb 
         persistentVolumeClaim: 
-          claimName: mssql-data 
+          claimName: mssql-data
 
 
 ---
@@ -43,20 +43,20 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dissertationmssqlef
+  name: webapijwtazureauth
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: dissertationmssqlef
+      app: webapijwtazureauth
   strategy: {}
   template:
     metadata:
       labels:
-        app: dissertationmssqlef
+        app: webapijwtazureauth
     spec:
       containers:
-        - image: adocontainerrp.azurecr.io/dissertationmssqlef:v1
+        - image: adocontainerrp.azurecr.io/webapijwtazureauth:v1
           name: dissertationmssqlef
           imagePullPolicy: Always
           ports:
