@@ -8,7 +8,15 @@ trigger:
 resources:
 - repo: self
 
+variables:
+  ResourceGroupLocation: resourceGroup().location
+  tag: '$(Build.BuildId)'
+
 steps:
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: '-powershell: Get-ChildItem -Path ''Insert root path'' -recurse'
 - task: AzurePowerShell@5
   inputs:
     azureSubscription: 'DevOps Permission'
