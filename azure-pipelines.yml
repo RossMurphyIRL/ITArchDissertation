@@ -11,8 +11,8 @@ resources:
 steps:
 - task: AzurePowerShell@5
   inputs:
-    azureSubscription: '6a0bacec-b436-4cc3-ba04-2e978d782706'
+    azureSubscription: 'DevOps Permission'
     ScriptType: 'FilePath'
     ScriptPath: './Deploy-AzureResourceGroup.ps1'
-    ScriptArguments: -TemplateFile Website.json
+    ScriptArguments: '-TemplateFile Website.json'
     azurePowerShellVersion: 'LatestVersion'
