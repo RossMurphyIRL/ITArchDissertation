@@ -5,26 +5,19 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
-using System.Text;
 using Infrastructure;
 using Core.Interfaces;
-using Microsoft.AspNetCore.Mvc;
-using Core;
 using System.Threading.Tasks;
 using Infrastructure.Repositories;
 using Microsoft.OpenApi.Models;
 using System;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authentication.AzureAD.UI;
-using Microsoft.AspNetCore.Authentication;
-using System.Collections.Generic;
-using System.Reflection;
-using System.IO;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Identity.Web;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using DissertationMSSQLEF.Controllers;
+using Prometheus;
+using Microsoft.AspNetCore.Diagnostics;
+using Newtonsoft.Json;
+using System.Net;
 
 namespace DissertationMSSQLEF
 {
@@ -71,34 +64,6 @@ namespace DissertationMSSQLEF
             services.Configure<TokenAuthenticationOptions>(Configuration.GetSection("Azure"));
             services.AddHttpContextAccessor();
             services.AddSingleton<IConfiguration>(Configuration);
-            // Adds Microsoft Identity platform (AAD v2.0) support to protect this Api
-            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            //.AddJwtBearer("AzureAD", options =>
-            //{
-            //    options.Audience = "99d48e8e-4962-4059-a084-25d57e4620b8";
-            //    options.Authority = "https://login.microsoftonline.com/7be57bbd-1168-4d0f-b36f-87a4b67594de/";
-            //});
-            //    services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
-            //.AddMicrosoftIdentityWebApp(options =>
-            //{
-            //    Configuration.Bind("AzureAd", options);
-
-            //});
-            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            //.AddAzureADBearer(options =>
-            //{
-            //    Configuration.Bind("AzureAd", options);
-            //});
-
-            // Authorization
-            //services.AddAuthorization(options =>
-            //{
-            //    var defaultAuthorizationPolicyBuilder = new AuthorizationPolicyBuilder(
-            //        AzureADDefaults.JwtBearerAuthenticationScheme);
-            //    defaultAuthorizationPolicyBuilder =
-            //        defaultAuthorizationPolicyBuilder.RequireAuthenticatedUser();
-            //    options.DefaultPolicy = defaultAuthorizationPolicyBuilder.Build();
-            //});
 
             services.AddDbContext<CourseContext>(opt =>
                          opt.UseSqlServer(Configuration.GetConnectionString("DissertationDatabase"),
@@ -160,6 +125,9 @@ namespace DissertationMSSQLEF
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseMetricServer("/metrics");
+            app.UseHttpMetrics();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -184,7 +152,6 @@ namespace DissertationMSSQLEF
             });
         }
     }
-
     public class MyErrorHandling
     {
         private readonly RequestDelegate _next;

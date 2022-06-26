@@ -154,8 +154,6 @@ namespace DissertationMSSQLEF.Controllers
 
             token = token.Split(" ")[1];
 
-            bool isValidToken = false;
-
             var myIssuer = string.Format(CultureInfo.InvariantCulture, "{0}/{1}/v2.0", new object[] { Options.CurrentValue.Instance, Options.CurrentValue.TenantId });
             var mySecret = Options.CurrentValue.Secret;
             var mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(mySecret));
@@ -179,16 +177,12 @@ namespace DissertationMSSQLEF.Controllers
             // Throws an Exception as the token is invalid (expired, invalid-formatted, etc.)  
             try
             {
+                System.Diagnostics.Debug.WriteLine("Trying to validate token");
                 tokenHandler.ValidateToken(token, validationParameters, out validatedToken);
             }
             catch (Exception ex)
             {
-                return Task.FromResult(AuthenticateResult.Fail($"Balancer not authorize token : for token={token}"));
-            }
-
-            if (!isValidToken)
-            {
-                ;
+                throw new Exception("Invalid Token");
             }
 
             var claims = new[] { new Claim("token", token) };
@@ -205,4 +199,5 @@ namespace DissertationMSSQLEF.Controllers
         public string ClientId { get; set; }
         public string Secret { get; set; }
     }
+
 }

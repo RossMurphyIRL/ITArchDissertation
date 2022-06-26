@@ -24,7 +24,7 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-    - name: lb-api-port
+    - name: http-api-port
       port: 80
   selector:
     app: dissertationmssqlef

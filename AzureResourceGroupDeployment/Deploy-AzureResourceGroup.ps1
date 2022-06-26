@@ -13,8 +13,6 @@ Param(
     [switch] $ValidateOnly
 )
 
-Import-Module Az
-
 try {
     [Microsoft.Azure.Common.Authentication.AzureSession]::ClientFactory.AddUserAgent("VSAzureTools-$UI$($host.name)".replace(' ','_'), '3.0.0')
 } catch { }

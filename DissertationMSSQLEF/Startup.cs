@@ -8,12 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using System.Text;
 using Infrastructure;
 using Core.Interfaces;
-using Microsoft.AspNetCore.Mvc;
-using Core;
-using System.Threading.Tasks;
 using Infrastructure.Repositories;
 using Microsoft.OpenApi.Models;
 using System;
+using Prometheus;
 
 namespace DissertationMSSQLEF
 {
@@ -58,6 +56,8 @@ namespace DissertationMSSQLEF
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseMetricServer("/metrics");
+            app.UseHttpMetrics();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

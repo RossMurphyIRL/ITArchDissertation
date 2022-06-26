@@ -54,6 +54,10 @@ spec:
     metadata:
       labels:
         app: dissertationmssqlef
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '80'
+        prometheus.io/path: '/metrics'
     spec:
       containers:
         - image: adocontainerrp.azurecr.io/dissertationmssqlef:v1

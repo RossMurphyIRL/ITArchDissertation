@@ -8,8 +8,8 @@ spec:
     app: mssql2 
   ports: 
     - protocol: TCP 
-      port: 1422
-      targetPort: 1422 
+      port: 1433
+      targetPort: 1433 
   type: LoadBalancer
 
 ---
@@ -24,43 +24,74 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-    - name: lb-api-port
+    - name: http-api-port
       port: 80
   selector:
     app: webapijwtazureauth
 
 ---
 
+apiVersion: telemetry.istio.io/v1alpha1
+kind: Telemetry
+metadata:
+  name: mesh-default
+  namespace: istio-system
+spec:
+  accessLogging:
+    - providers:
+      - name: envoy
+      
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: default-ingressgateway
+spec:
+  selector:
+    istio: ingressgateway # use Istio default gateway implementation
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+
+---
+
 apiVersion: security.istio.io/v1beta1
 kind: RequestAuthentication
 metadata:
-  name: ingress-jwt
-  namespace: default
+  name: ingress-auth
+  namespace: istio-system
 spec:
   selector:
     matchLabels:
-      app: httpbin
+      istio: ingressgateway
   jwtRules:
-  - issuer: "https://sts.windows.net/7be57bbd-1168-4d0f-b36f-87a4b67594de/"
+  - issuer: "https://login.microsoftonline.com/7be57bbd-1168-4d0f-b36f-87a4b67594de/v2.0"
     jwksUri: "https://login.microsoftonline.com/common/discovery/v2.0/keys"
+    forwardOriginalToken: true
     
 ---
 
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: routerouting
-  namespace: default
+  name: route-jwt
 spec:
+  hosts:
+  gateways:
+  - default-ingressgateway
   hosts:
   - "*"
   http:
-  - match:
-    - uri:
-        prefix: /headers
-      headers:
-        "@request.auth.principal":
-          exact: https://login.microsoftonline.com/7be57bbd-1168-4d0f-b36f-87a4b67594de/v2.0
+  - name: "authorizedroute"
+    match:
+    - headers:
+        "@request.auth.claims.sub":
+          exact: "n6fcOeBB1OsSKoQ-_U9nUvu8_e2zt8N6rnRgzo-rYnw"
     route:
     - destination:
         host: webapijwtazureauth
