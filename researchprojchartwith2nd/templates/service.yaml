@@ -90,8 +90,12 @@ spec:
   - name: "authorizedroute"
     match:
     - headers:
-        "@request.auth.claims.sub":
-          exact: "n6fcOeBB1OsSKoQ-_U9nUvu8_e2zt8N6rnRgzo-rYnw"
+        "@request.auth.claims.iss":
+          exact: "https://login.microsoftonline.com/7be57bbd-1168-4d0f-b36f-87a4b67594de/v2.0"
     route:
     - destination:
         host: webapijwtazureauth
+  - name: "default"
+    route:
+    - destination:
+        host: dissertationmssqlef
